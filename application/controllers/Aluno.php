@@ -22,7 +22,8 @@ class Aluno extends CI_Controller{
         
         
         if($this->model_aluno->cadastra($dados)){
-            redirect('Inicio/index');
+            //echo "<script>alert('Cadastrado com sucesso')</script>";
+            redirect("Inicio/index");
         }else{
             echo "problema ao cadastrar";
         }

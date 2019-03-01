@@ -15,7 +15,7 @@ class Curso extends CI_Controller{
                if($this->model_curso->cadastra($dados)){
                     redirect('Inicio/cadastar_curso');
                }else{
-                    echo "Erro";
+                    echo "Erro ao cadastrar o Curso";
                }
                
           }else{
