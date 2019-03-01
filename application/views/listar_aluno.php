@@ -82,14 +82,14 @@
             data: {"id_curso" : id_curso, "nome_aluno" : nome_aluno},
             dataType:'json',
             success:function(response){
-                //console.log(response);
+                console.log(response);
                 escrever="";
                 var select = document.querySelector('select');
                 var option = select.children[select.selectedIndex];
                 var texto = option.textContent;
                 
                 try{
-                    escrever+="<tr><td>"+response.nome_aluno+"</td>";
+                    escrever+="<tr data-id1='"+response.id_aluno+"'>"+"<td>"+response.nome_aluno+"</td>";
                     escrever+="<td>"+response.telefone_aluno+"</td>";
                     escrever+="<td>"+texto+"</td>";
                     // escrever+="<td><button id='infoaluno' class='btn btn-info'><i class='fa fa-edit'></i></button></td>";
@@ -121,7 +121,7 @@
                         //console.log(response);
                         var dado = response;
                         console.log("primeiro ajax");
-                        escrever += "<label>Nome do Aluno</label>" + "<input class='form-control' id='nome' value='"+response.nome_aluno+"'>"; 
+                        escrever += "<label>Nome do Aluno</label>" + "<input type='text minlength=4' class='form-control' id='nome1' value='"+response.nome_aluno+"'>"; 
                         
                         
                         
@@ -130,21 +130,26 @@
                             type:"GET",
                             dataType:'json',
                             success:function(response){
-                                console.log(dado);
-                                escrever+="<label>Curso</label> <select class='form-control'>"
-                                for(let i=0 ; i<response.length; i++){
-                                    escrever+="<option "+"value='"+response[i].id_curso+"'>"+response[i].nome_do_curso+"</option>";
+                                try{
+                                    console.log(dado);
+                                    escrever+="<label>Curso</label> <select id='cursinho' class='form-control'>"
+                                    for(let i=0 ; i<response.length; i++){
+                                        escrever+="<option "+"value='"+response[i].id_curso+"'>"+response[i].nome_do_curso+"</option>";
+                                    }
+                                    escrever+="</select><br>";
+                                    escrever+="<label>Data de Nascimento</label>";
+                                    escrever+="<input type='date' class='form-control' id='nascimento' "+"value='"+dado.data_nascimento+"'><br>"
+                                    escrever += "<label>Telefone do Aluno</label>" + "<input class='form-control' id='telefone' value='"+dado.telefone_aluno+"'><br>"; 
+                                    escrever+="<button data-dismiss='modal' aria-label='Close' style='margin-top:10px;' id='alterar' "+"class='btn btn-success text-white'"+" data-ide='"+dado.id_aluno+"'"+">"+"<i class='fa fa-edit'></i></button>"
+                                    
+                                    
+                                    $("#getCode").html(escrever);
+                            
+                                    jQuery("#getCodeModal").modal('show');
                                 }
-                                escrever+="</select><br>";
-                                escrever+="<label>Data de Nascimento</label>";
-                                escrever+="<input type='date' class='form-control' "+"value='"+dado.data_nascimento+"'><br>"
-                                escrever += "<label>Nome do Aluno</label>" + "<input class='form-control' id='nome' value='"+dado.telefone_aluno+"'><br>"; 
-                                escrever+="<button class='btn btn-success'  style='margin-top:8px;' onclick='alterar()'>Alterar</button>"
-                                
-                                
-                                $("#getCode").html(escrever);
-                        
-                                jQuery("#getCodeModal").modal('show');
+                                catch(err){
+                                    
+                                }
                             }
                         });        
                         
@@ -155,8 +160,36 @@
                 });
             
         });
-        
-    function alterar(){
-        alert("aqui");
-    }
+        $(document).on('click', '#alterar', function(e){
+            var id = $(this).attr("data-ide");
+            var nome = $("#nome1").val();
+            var telefone = $('#telefone').val();
+            // var date = new Date($('#nascimento').val());
+            var date  = $("#nascimento").val();
+            var curso_id = $("#cursinho option:selected").val();
+
+            console.log(id,nome,telefone,date, curso_id);
+
+            if(nome.length>3 && nome.length<51){
+                $.ajax({
+                    url:'<?= base_url('Aluno/editar')?>',
+                    type:'POST',
+                    data:{"id": id, "nome" : nome, "telefone" : telefone, "date" : date, "curso_id": curso_id},
+                    success:function(response){
+                        console.log(response);
+                        try{
+
+                            window.location.reload();
+                            
+                        }catch(err){
+                            alert("Erro ao atualizar no banco de dados")
+                        }
+                    }
+                });
+            }else{
+                alert("Nome de usuário muito curto ou muito grande");
+            }
+            
+        });
+    
 </script>

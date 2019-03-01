@@ -6,7 +6,7 @@ class Aluno_model extends CI_Model{
         parent:: __construct();
         
     }
-    
+    /**cadastra um aluno no banco de dados */
     public function cadastra($dados){
         return $this->db->insert($this->table, $dados);
     }
@@ -19,7 +19,7 @@ class Aluno_model extends CI_Model{
         return $this->db->get()->result();
     }
 
-    
+    /** pega um aluno pelo id do curso e pelo nome*/
     public function getAluno($id_curso, $nome_aluno){
        return $this->db->select('alunos.*')
        ->from($this->table)
@@ -27,9 +27,13 @@ class Aluno_model extends CI_Model{
        ->where('alunos.nome_aluno',$nome_aluno)->get()->row();
         
     }
+    /** Recebe um aluno pelo ID */
     public function getAlunoById($id_aluno){
         return $this->db->where('id_aluno', $id_aluno)->get($this->table)->row();
     }
-
+    /**Função que grava as alterações no banco de dados */
+    public function update($id_aluno,$dados){
+        return $this->db->where('id_aluno', $id_aluno)->update($this->table,$dados);
+    }
 
 }

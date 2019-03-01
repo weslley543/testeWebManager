@@ -7,7 +7,7 @@ class Aluno extends CI_Controller{
         $this->load->library('form_validation');
         $this->load->model('Aluno_model', 'model_aluno');
     }
-    
+    /*Cadastra um aluno */
     public function cadastrar(){
        $this->form_validation->set_rules('nome', 'NOME', array('required', 'min_length[4]','max_length[50]'));
        $this->form_validation->set_rules('data_nascimento', 'DATA', 'required');
@@ -22,7 +22,7 @@ class Aluno extends CI_Controller{
         
         
         if($this->model_aluno->cadastra($dados)){
-            echo "E-mail enviado com sucesso!";
+            redirect('Inicio/index');
         }else{
             echo "problema ao cadastrar";
         }
@@ -30,7 +30,7 @@ class Aluno extends CI_Controller{
             echo validation_errors();
        }
     }
-    
+    /*Seleciona um aluno por curso e id */
     public function get(){
         $id_curso= $this->input->post("id_curso");
         $nome_aluno= $this->input->post("nome_aluno");
@@ -41,7 +41,7 @@ class Aluno extends CI_Controller{
         header('Content-Type: application/json; charset=utf-8');
 		echo json_encode($dado,JSON_UNESCAPED_UNICODE);
     }
-    
+    /*essa função é apenas para pegar os dados do aluno para abrir o edit */
     public function edit(){
         $id_aluno = $this->input->post("id");
         
@@ -51,5 +51,21 @@ class Aluno extends CI_Controller{
 		echo json_encode($dado,JSON_UNESCAPED_UNICODE);
         
 
+    }
+    /*função para escrever as alterações no banco */
+
+    public function editar(){
+        $id_aluno = $this->input->post('id');
+        $dados['data_nascimento']= $this->input->post('date');
+        $dados['nome_aluno'] = $this->input->post('nome');
+        $dados['id_curso'] = $this->input->post('curso_id');
+        $dados['telefone_aluno'] = $this->input->post('telefone');
+
+        $this->model_aluno->update($id_aluno,$dados);
+        
+        $dado_atualizado = $this->model_aluno->getAlunoById($id_aluno);
+
+        header('Content-Type: application/json; charset=utf-8');
+		echo json_encode($dado_atualizado,JSON_UNESCAPED_UNICODE);
     }
 }

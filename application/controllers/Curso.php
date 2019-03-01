@@ -13,7 +13,7 @@ class Curso extends CI_Controller{
           if($this->form_validation->run()){
                $dados['nome_do_curso'] = $this->input->post('nomecurso');
                if($this->model_curso->cadastra($dados)){
-
+                    redirect('Inicio/cadastar_curso');
                }else{
                     echo "Erro";
                }
